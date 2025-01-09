@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>寿司店API测试页面</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 50px;
+        }
+        .sushi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+        .sushi-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .sushi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .sushi-card img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .sushi-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 8px 0;
+            color: #333;
+        }
+        .sushi-price {
+            color: #e44d26;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>寿司店API测试页面</h1>
+
+        <!-- 注册测试 -->
+        <div class="section">
+            <h2>1. 用户注册测试</h2>
+            <div>
+                <input type="text" id="registerUsername" placeholder="用户名">
+                <input type="password" id="registerPassword" placeholder="密码">
+                <button onclick="register()">注册</button>
+            </div>
+            <div id="registerResult" class="result"></div>
+        </div>
+
+        <!-- 登录测试 -->
+        <div class="section">
+            <h2>2. 用户登录测试</h2>
+            <div>
+                <input type="text" id="loginUsername" placeholder="用户名">
+                <input type="password" id="loginPassword" placeholder="密码">
+                <button onclick="login()">登录</button>
+            </div>
+            <div id="loginResult" class="result"></div>
+        </div>
+
+        <!-- 寿司列表和搜索 -->
+        <div class="section">
+            <h2>3. 寿司菜单</h2>
+            <div class="search-box">
+                <button onclick="getSushiList()">显示全部寿司</button>
+                <input type="text" id="searchKeyword" placeholder="搜索寿司名称">
+                <button onclick="searchSushi()">搜索</button>
+            </div>
+            <div id="sushiContainer" class="sushi-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5001/api';
+
+        async function apiRequest(endpoint, method = 'GET', body = null) {
+            try {
+                const options = {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                };
+
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+                const data = await response.json();
+
+                if (data.status === 'error') {
+                    throw new Error(data.message);
+                }
+
+                return data;
+            } catch (error) {
+                console.error('API请求错误:', error);
+                throw error;
+            }
+        }
+
+        function displaySushi(sushiList) {
+            const container = document.getElementById('sushiContainer');
+            container.innerHTML = '';
+
+            if (!sushiList || sushiList.length === 0) {
+                container.innerHTML = '<div class="no-results">未找到寿司</div>';
+                return;
+            }
+
+            sushiList.forEach(sushi => {
+                const card = document.createElement('div');
+                card.className = 'sushi-card';
+                card.innerHTML = `
+                    <img src="http://localhost:5001/${sushi.image}"
+                         alt="${sushi.name}"
+                         onerror="this.src='https://via.placeholder.com/150?text=寿司'">
+                    <div class="sushi-name">${sushi.name}</div>
+                    <div class="sushi-price">￥${sushi.price.toFixed(2)}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function register() {
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+
+            try {
+                const data = await apiRequest('/auth/register', 'POST', { username, password });
+                document.getElementById('registerResult').innerText = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('registerResult').innerText = `错误: ${error.message}`;
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const data = await apiRequest('/auth/login', 'POST', { username, password });
+                document.getElementById('loginResult').innerText = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('loginResult').innerText = `错误: ${error.message}`;
+            }
+        }
+
+        async function getSushiList() {
+            try {
+                const data = await apiRequest('/sushi/');
+                displaySushi(data.data);
+            } catch (error) {
+                document.getElementById('sushiContainer').innerHTML = `
+                    <div style="color: red; padding: 20px;">错误: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function searchSushi() {
+            const keyword = document.getElementById('searchKeyword').value;
+            if (!keyword.trim()) {
+                getSushiList();
+                return;
+            }
+            try {
+                const data = await apiRequest(`/sushi/search?keyword=${encodeURIComponent(keyword)}`);
+                displaySushi(data.data);
+            } catch (error) {
+                document.getElementById('sushiContainer').innerHTML = `
+                    <div style="color: red; padding: 20px;">错误: ${error.message}</div>
+                `;
+            }
+        }
+
+        // 页面加载时显示所有寿司
+        window.onload = getSushiList;
+    </script>
+</body>
+</html>
