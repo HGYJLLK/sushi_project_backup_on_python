@@ -42,36 +42,33 @@ def search():
             'message': str(e)
         }), 500
 
-
 @sushi_bp.route("/content", methods=['GET'])
-def get_content():  # 移除 async 因为 Flask 不支持原生 async
+def get_content():
     try:
-        # 读取图片文件并转换为 Base64
-        image_path = Path("../controllers/sushi_img/beef_sushi.jpg")
-        if not image_path.exists():
-            return jsonify({
-                'status': 'error',
-                'message': '图片文件不存在'
-            }), 404
-
-        with open(image_path, "rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode()
-
-        # 在 Markdown 文本中嵌入 Base64 图片
-        markdown_text = f"""
-        # 你的标题
-
-        这是一些文本内容
-
-        ![embedded image](data:image/png;base64,{encoded_image})
-
-        更多的文本内容
-        """
+        content = (
+            "# 寿司介绍\n" +
+            "\n" +
+            "![寿司图片](data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QB+RXhpZgAASUkqAAgAAAAEAA4BAgAiAAAAPgAAAJiCAgAGAAAAYAAAABoBBQABAAAAZgAAABsBBQABAAAAbgAAAAAAAABCZWVmIFN1Y2hpIE5pZ2lyaSBvbiBhIGJsYWNrIHBsYXRlTWFudUhLLAEAAAEAAAAsAQAAAQAAAP...)\n" +
+            "\n" +
+            "***Vue :*** [Vue3 官网](https://cn.vuejs.org/)\n" +
+            "***CSDN :*** [CSDN 官网](https://www.csdn.net/)\n" +
+            "\n" +
+            "## 寿司种类\n" +
+            "\n" +
+            "***牛肉寿司 :*** [寿司制作教程](https://www.runoob.com/cooking/sushi-tutorial.html)\n" + 
+            "***金枪鱼寿司 :*** [寿司历史介绍](https://www.history-of-sushi.net)\n" +
+            "\n" +
+            "## 制作方法\n" +
+            "\n" +
+            "***步骤一 :*** 准备寿司醋和米饭\n" +
+            "***步骤二 :*** 准备生鱼片\n" +
+            "***步骤三 :*** 将食材卷起即可"
+        )
 
         return jsonify({
             'status': 'success',
             'data': {
-                'text': markdown_text
+                'content': content
             }
         })
     except Exception as e:
