@@ -14,7 +14,8 @@ def serve_sushi_image(filename):
     return send_from_directory('controllers/sushi_img', filename)
 
 # 数据库配置
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456789@localhost/sushi_db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456789@localhost/sushi_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123qweQWE!@localhost/sushi_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your-secret-key'
 

@@ -17,7 +17,7 @@ def register():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'message': '注册成功'}), 201
+    return jsonify({'message': '注册成功'}), 200
 
 
 @user_bp.route('/login', methods=['POST'])
