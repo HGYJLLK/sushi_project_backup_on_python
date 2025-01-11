@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from controllers.sushi import get_all_sushi, search_sushi, SUSHI_DETAILS, SUSHI_DATA
 import base64
 from pathlib import Path
+import pprint
 
 sushi_bp = Blueprint('sushi', __name__)
 
@@ -79,9 +80,10 @@ def search():
 """
 
 
-@sushi_bp.route("/detail/<path:sushi_name>", methods=['GET'])
-def get_sushi_detail(sushi_name):
+@sushi_bp.route("/detail", methods=['GET'])
+def get_sushi_detail():
     try:
+        sushi_name = request.args.get('sushi_name', '')
         # 检查寿司是否存在
         sushi_detail = SUSHI_DETAILS.get(sushi_name)
         if not sushi_detail:
