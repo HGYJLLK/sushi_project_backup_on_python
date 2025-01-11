@@ -70,7 +70,6 @@
 ### 2.1 获取所有寿司
 - 接口：`GET /sushi/`
 - 描述：获取所有寿司列表
-- 参数：无
 - 响应示例：
   ```json
   {
@@ -80,11 +79,6 @@
         "name": "三文鱼寿司",
         "image": "controllers/sushi_img/salmon_sushi.jpg",
         "price": 28
-      },
-      {
-        "name": "金枪鱼寿司",
-        "image": "controllers/sushi_img/tuna_sushi.jpg",
-        "price": 25
       }
     ]
   }
@@ -96,17 +90,150 @@
 - 查询参数：
   - `keyword`: string (搜索关键词)
 - 请求示例：`GET /sushi/search?keyword=三文鱼`
+- 响应示例：同 2.1
+
+### 2.3 获取寿司详情
+- 接口：`GET /sushi/detail`
+- 描述：获取寿司的详细信息
+- 查询参数：
+  - `sushi_name`: string (寿司名称)
 - 响应示例：
   ```json
   {
     "status": "success",
-    "data": [
+    "data": {
+      "content": "# 金枪鱼寿司\n\n制作步骤..."
+    }
+  }
+  ```
+
+## 3. 寿司互动接口
+
+### 3.1 获取寿司状态
+- 接口：`GET /sushi/actions/status/{sushi_name}`
+- 描述：获取寿司的点赞、评论数等状态
+- 查询参数：
+  - `username`: string (可选，用户名)
+- 响应示例：
+  ```json
+  {
+    "likes_count": 10,
+    "comments_count": 5,
+    "average_score": 4.5,
+    "user_status": {
+      "has_liked": true,
+      "has_favorited": false
+    }
+  }
+  ```
+
+### 3.2 点赞操作
+#### 点赞
+- 接口：`POST /sushi/actions/like`
+- 描述：对寿司进行点赞
+- 请求体：
+  ```typescript
+  {
+    username: string,
+    sushi_name: string
+  }
+  ```
+- 响应示例：
+  ```json
+  {
+    "status": "success",
+    "message": "点赞成功"
+  }
+  ```
+
+#### 取消点赞
+- 接口：`POST /sushi/actions/unlike`
+- 描述：取消寿司点赞
+- 请求体：同点赞接口
+- 响应示例：
+  ```json
+  {
+    "status": "success",
+    "message": "取消点赞成功"
+  }
+  ```
+
+### 3.3 收藏操作
+#### 收藏
+- 接口：`POST /sushi/actions/favorite`
+- 描述：收藏寿司
+- 请求体：
+  ```typescript
+  {
+    username: string,
+    sushi_name: string
+  }
+  ```
+- 响应示例：同点赞接口
+
+#### 取消收藏
+- 接口：`POST /sushi/actions/unfavorite`
+- 描述：取消收藏寿司
+- 请求体：同收藏接口
+- 响应示例：同点赞接口
+
+### 3.4 评论功能
+#### 添加评论
+- 接口：`POST /sushi/actions/comment`
+- 描述：添加寿司评论
+- 请求体：
+  ```typescript
+  {
+    username: string,
+    sushi_name: string,
+    content: string,
+    score: number  // 1-5分
+  }
+  ```
+- 响应示例：
+  ```json
+  {
+    "status": "success",
+    "message": "评论成功"
+  }
+  ```
+
+#### 获取评论列表
+- 接口：`GET /sushi/actions/comments/{sushi_name}`
+- 描述：获取寿司的评论列表
+- 响应示例：
+  ```json
+  {
+    "comments": [
       {
-        "name": "三文鱼寿司",
-        "image": "controllers/sushi_img/salmon_sushi.jpg",
-        "price": 28
+        "id": 1,
+        "username": "user1",
+        "content": "非常好吃",
+        "score": 5,
+        "created_at": "2024-01-12 15:30:00"
       }
     ]
+  }
+  ```
+
+### 3.5 用户互动记录
+#### 获取用户点赞列表
+- 接口：`GET /sushi/actions/user/likes/{username}`
+- 描述：获取用户点赞过的寿司列表
+- 响应示例：
+  ```json
+  {
+    "likes": ["金枪鱼寿司", "三文鱼寿司"]
+  }
+  ```
+
+#### 获取用户收藏列表
+- 接口：`GET /sushi/actions/user/favorites/{username}`
+- 描述：获取用户收藏的寿司列表
+- 响应示例：
+  ```json
+  {
+    "favorites": ["金枪鱼寿司", "三文鱼寿司"]
   }
   ```
 
@@ -125,6 +252,7 @@ const api = axios.create({
   }
 })
 
+// 原有的 API
 export const authApi = {
   register(username: string, password: string) {
     return api.post('/auth/register', { username, password })
@@ -139,84 +267,57 @@ export const sushiApi = {
     return api.get('/sushi/')
   },
   searchSushi(keyword: string) {
-    return api.get('/sushi/search', {
-      params: { keyword }
+    return api.get('/sushi/search', { params: { keyword } })
+  }
+}
+
+// 新增互动 API
+export const interactionApi = {
+  getSushiStatus(sushiName: string, username?: string) {
+    return api.get(`/sushi/actions/status/${sushiName}`, {
+      params: { username }
     })
+  },
+  likeSushi(username: string, sushiName: string) {
+    return api.post('/sushi/actions/like', { username, sushi_name: sushiName })
+  },
+  unlikeSushi(username: string, sushiName: string) {
+    return api.post('/sushi/actions/unlike', { username, sushi_name: sushiName })
+  },
+  favoriteSushi(username: string, sushiName: string) {
+    return api.post('/sushi/actions/favorite', { username, sushi_name: sushiName })
+  },
+  unfavoriteSushi(username: string, sushiName: string) {
+    return api.post('/sushi/actions/unfavorite', { username, sushi_name: sushiName })
+  },
+  addComment(username: string, sushiName: string, content: string, score: number) {
+    return api.post('/sushi/actions/comment', {
+      username,
+      sushi_name: sushiName,
+      content,
+      score
+    })
+  },
+  getComments(sushiName: string) {
+    return api.get(`/sushi/actions/comments/${sushiName}`)
+  },
+  getUserLikes(username: string) {
+    return api.get(`/sushi/actions/user/likes/${username}`)
+  },
+  getUserFavorites(username: string) {
+    return api.get(`/sushi/actions/user/favorites/${username}`)
   }
 }
 ```
 
-```vue
-<!-- components/SushiList.vue -->
-<template>
-  <div class="sushi-container">
-    <!-- 搜索框 -->
-    <div class="search-box">
-      <el-input 
-        v-model="searchKeyword" 
-        placeholder="搜索寿司"
-        @change="handleSearch"
-      />
-    </div>
-    
-    <!-- 寿司列表 -->
-    <el-row :gutter="20">
-      <el-col 
-        v-for="sushi in sushiList" 
-        :key="sushi.name"
-        :xs="24" 
-        :sm="12" 
-        :md="8" 
-        :lg="6"
-      >
-        <el-card class="sushi-card">
-          <img :src="sushi.image" :alt="sushi.name">
-          <h3>{{ sushi.name }}</h3>
-          <p class="price">￥{{ sushi.price.toFixed(2) }}</p>
-        </el-card>
-      </el-col>
-    </el-row>
-  </div>
-</template>
-
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { sushiApi } from '@/api'
-
-const sushiList = ref([])
-const searchKeyword = ref('')
-
-const loadSushiList = async () => {
-  try {
-    const response = await sushiApi.getAllSushi()
-    sushiList.value = response.data.data
-  } catch (error) {
-    console.error('加载寿司列表失败:', error)
-  }
-}
-
-const handleSearch = async () => {
-  try {
-    if (!searchKeyword.value.trim()) {
-      await loadSushiList()
-      return
-    }
-    const response = await sushiApi.searchSushi(searchKeyword.value)
-    sushiList.value = response.data.data
-  } catch (error) {
-    console.error('搜索寿司失败:', error)
-  }
-}
-
-onMounted(loadSushiList)
-</script>
-```
-
-### 注意事项
+## 注意事项
 1. 所有接口都返回统一的响应格式
 2. 图片URL需要与后端服务器URL拼接
 3. 建议使用 TypeScript 定义接口类型
 4. 后端已配置 CORS，前端可直接访问
 5. 建议使用 Pinia 或 Vuex 管理用户状态
 6. 注意处理图片加载失败的情况
-
+7. 互动功能需要用户登录才能使用
+8. 用户只能对同一个寿司点赞/收藏一次
+9. 评分必须在 1-5 分之间
+10. 评论提交后不可修改或删除

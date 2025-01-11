@@ -1,8 +1,9 @@
-from flask import Blueprint, jsonify, request
-from controllers.sushi import get_all_sushi, search_sushi, SUSHI_DETAILS, SUSHI_DATA
 import base64
 from pathlib import Path
-import pprint
+
+from flask import Blueprint, jsonify, request
+
+from controllers.sushi import get_all_sushi, search_sushi, SUSHI_DETAILS, SUSHI_DATA
 
 sushi_bp = Blueprint('sushi', __name__)
 

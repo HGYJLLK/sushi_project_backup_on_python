@@ -24,12 +24,17 @@
             border: 1px solid #eee;
             border-radius: 4px;
         }
-        input {
+        input, select, textarea {
             padding: 8px;
             margin: 5px;
             border: 1px solid #ddd;
             border-radius: 4px;
             width: 200px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            resize: vertical;
         }
         button {
             padding: 8px 15px;
@@ -40,6 +45,9 @@
             cursor: pointer;
             margin: 5px;
         }
+        button:hover {
+            background-color: #45a049;
+        }
         .result {
             margin-top: 10px;
             padding: 10px;
@@ -47,6 +55,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             min-height: 50px;
+            white-space: pre-wrap;
         }
         .sushi-grid {
             display: grid;
@@ -95,6 +104,59 @@
             padding: 20px;
             color: #666;
         }
+        .sushi-interaction {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        .stats-box {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .comments-container {
+            margin-top: 20px;
+        }
+        .comment-card {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background: white;
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .star-rating {
+            color: gold;
+            font-size: 1.2em;
+        }
+        .error {
+            color: #ff4444;
+            padding: 10px;
+            background: #ffe6e6;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -133,16 +195,99 @@
             </div>
             <div id="sushiContainer" class="sushi-grid"></div>
         </div>
+
+        <!-- Markdown 测试 -->
+        <div class="section">
+            <h2>4. Markdown 测试</h2>
+            <div>
+                <input type="text" id="sushiName" placeholder="输入寿司名称">
+                <button onclick="testMarkdown()">获取 Markdown</button>
+            </div>
+            <div id="markdownResult" class="result"></div>
+        </div>
+
+        <!-- 寿司互动测试 -->
+        <div class="section">
+            <h2>5. 寿司互动测试</h2>
+
+            <!-- 状态查询 -->
+            <div>
+                <h3>寿司状态查询</h3>
+                <div class="sushi-interaction">
+                    <input type="text" id="statusSushiName" placeholder="寿司名称">
+                    <input type="text" id="statusUsername" placeholder="用户名（可选）">
+                    <button onclick="checkSushiStatus()">查看状态</button>
+                </div>
+                <div id="sushiStatsResult" class="stats-box"></div>
+            </div>
+
+            <!-- 点赞/取消点赞 -->
+            <div>
+                <h3>点赞测试</h3>
+                <div class="sushi-interaction">
+                    <input type="text" id="likeSushiName" placeholder="寿司名称">
+                    <input type="text" id="likeUsername" placeholder="用户名">
+                    <button onclick="likeSushi()">点赞</button>
+                    <button onclick="unlikeSushi()" style="background-color: #ff4444;">取消点赞</button>
+                </div>
+                <div id="likeResult" class="result"></div>
+            </div>
+
+            <!-- 收藏/取消收藏 -->
+            <div>
+                <h3>收藏测试</h3>
+                <div class="sushi-interaction">
+                    <input type="text" id="favSushiName" placeholder="寿司名称">
+                    <input type="text" id="favUsername" placeholder="用户名">
+                    <button onclick="favoriteSushi()">收藏</button>
+                    <button onclick="unfavoriteSushi()" style="background-color: #ff4444;">取消收藏</button>
+                </div>
+                <div id="favoriteResult" class="result"></div>
+            </div>
+
+            <!-- 评论 -->
+            <div>
+                <h3>评论测试</h3>
+                <div class="sushi-interaction">
+                    <input type="text" id="commentSushiName" placeholder="寿司名称">
+                    <input type="text" id="commentUsername" placeholder="用户名">
+                    <select id="commentScore">
+                        <option value="">选择评分</option>
+                        <option value="1">1星</option>
+                        <option value="2">2星</option>
+                        <option value="3">3星</option>
+                        <option value="4">4星</option>
+                        <option value="5">5星</option>
+                    </select>
+                    <textarea id="commentContent" placeholder="评论内容"></textarea>
+                    <button onclick="addComment()">提交评论</button>
+                </div>
+                <div id="commentResult" class="result"></div>
+            </div>
+
+            <!-- 查看评论 -->
+            <div>
+                <h3>查看评论</h3>
+                <div class="sushi-interaction">
+                    <input type="text" id="viewCommentsSushiName" placeholder="寿司名称">
+                    <button onclick="getComments()">查看评论</button>
+                </div>
+                <div id="commentsContainer" class="comments-container"></div>
+            </div>
+
+            <!-- 用户互动记录 -->
+            <div>
+                <h3>用户互动记录</h3>
+                <div class="sushi-interaction">
+                    <input type="text" id="userRecordUsername" placeholder="用户名">
+                    <button onclick="getUserLikes()">查看点赞</button>
+                    <button onclick="getUserFavorites()">查看收藏</button>
+                </div>
+                <div id="userRecordResult" class="result"></div>
+            </div>
+        </div>
     </div>
 
-
-    <!-- Markdown 测试区域 -->
-    <div class="section">
-        <h2>4. Markdown 测试</h2>
-        <input type="text" id="sushiName" placeholder="输入寿司名称">
-        <button onclick="testMarkdown()">获取 Markdown</button>
-        <div id="markdownResult" class="result" style="white-space: pre-wrap; font-family: monospace;"></div>
-    </div>
     <script>
         const API_BASE_URL = 'http://localhost:5001/api';
 
@@ -162,11 +307,6 @@
 
                 const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
                 const data = await response.json();
-
-                if (data.status === 'error') {
-                    throw new Error(data.message);
-                }
-
                 return data;
             } catch (error) {
                 console.error('API请求错误:', error);
@@ -200,7 +340,6 @@
         async function register() {
             const username = document.getElementById('registerUsername').value;
             const password = document.getElementById('registerPassword').value;
-
             try {
                 const data = await apiRequest('/auth/register', 'POST', { username, password });
                 document.getElementById('registerResult').innerText = JSON.stringify(data, null, 2);
@@ -212,7 +351,6 @@
         async function login() {
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
-
             try {
                 const data = await apiRequest('/auth/login', 'POST', { username, password });
                 document.getElementById('loginResult').innerText = JSON.stringify(data, null, 2);
@@ -227,7 +365,7 @@
                 displaySushi(data.data);
             } catch (error) {
                 document.getElementById('sushiContainer').innerHTML = `
-                    <div style="color: red; padding: 20px;">错误: ${error.message}</div>
+                    <div class="error">错误: ${error.message}</div>
                 `;
             }
         }
@@ -243,13 +381,10 @@
                 displaySushi(data.data);
             } catch (error) {
                 document.getElementById('sushiContainer').innerHTML = `
-                    <div style="color: red; padding: 20px;">错误: ${error.message}</div>
+                    <div class="error">错误: ${error.message}</div>
                 `;
             }
         }
-
-        // 页面加载时显示所有寿司
-        window.onload = getSushiList;
 
         async function testMarkdown() {
             const sushiName = document.getElementById('sushiName').value;
@@ -258,12 +393,156 @@
                 return;
             }
             try {
-                const data = await apiRequest(`/sushi/detail/${encodeURIComponent(sushiName)}`);
+                const data = await apiRequest(`/sushi/detail?sushi_name=${encodeURIComponent(sushiName)}`);
                 document.getElementById('markdownResult').innerText = data.data.content;
             } catch (error) {
                 document.getElementById('markdownResult').innerText = `错误: ${error.message}`;
             }
         }
+
+        async function checkSushiStatus() {
+            const sushiName = document.getElementById('statusSushiName').value;
+            const username = document.getElementById('statusUsername').value;
+            try {
+                const endpoint = `/sushi/actions/status/${encodeURIComponent(sushiName)}${username ? `?username=${encodeURIComponent(username)}` : ''}`;
+                const data = await apiRequest(endpoint);
+                const statsBox = document.getElementById('sushiStatsResult');
+                statsBox.innerHTML = `
+                    <div class="stat-item">👍 ${data.likes_count} 点赞</div>
+                    <div class="stat-item">💬 ${data.comments_count} 评论</div>
+                    <div class="stat-item">⭐ ${data.average_score.toFixed(1)} 分</div>
+                    ${username ? `
+                        <div class="stat-item">已点赞: ${data.user_status.has_liked ? '是' : '否'}</div>
+                        <div class="stat-item">已收藏: ${data.user_status.has_favorited ? '是' : '否'}</div>
+                    ` : ''}
+                `;
+            } catch (error) {
+                document.getElementById('sushiStatsResult').innerHTML = `<div class="error">错误: ${error.message}</div>`;
+            }
+        }
+
+        async function likeSushi() {
+            const username = document.getElementById('likeUsername').value;
+            const sushi_name = document.getElementById('likeSushiName').value;
+            try {
+                const data = await apiRequest('/sushi/actions/like', 'POST', { username, sushi_name });
+                document.getElementById('likeResult').innerText = JSON.stringify(data, null, 2);
+                checkSushiStatus();
+            } catch (error) {
+                document.getElementById('likeResult').innerText = `错误: ${error.message}`;
+            }
+        }
+
+        async function unlikeSushi() {
+            const username = document.getElementById('likeUsername').value;
+            const sushi_name = document.getElementById('likeSushiName').value;
+            try {
+                const data = await apiRequest('/sushi/actions/unlike', 'POST', { username, sushi_name });
+                document.getElementById('likeResult').innerText = JSON.stringify(data, null, 2);
+                checkSushiStatus();
+            } catch (error) {
+                document.getElementById('likeResult').innerText = `错误: ${error.message}`;
+            }
+        }
+
+        async function favoriteSushi() {
+            const username = document.getElementById('favUsername').value;
+            const sushi_name = document.getElementById('favSushiName').value;
+            try {
+                const data = await apiRequest('/sushi/actions/favorite', 'POST', { username, sushi_name });
+                document.getElementById('favoriteResult').innerText = JSON.stringify(data, null, 2);
+                checkSushiStatus();
+            } catch (error) {
+                document.getElementById('favoriteResult').innerText = `错误: ${error.message}`;
+            }
+        }
+
+        async function unfavoriteSushi() {
+            const username = document.getElementById('favUsername').value;
+            const sushi_name = document.getElementById('favSushiName').value;
+            try {
+                const data = await apiRequest('/sushi/actions/unfavorite', 'POST', { username, sushi_name });
+                document.getElementById('favoriteResult').innerText = JSON.stringify(data, null, 2);
+                checkSushiStatus();
+            } catch (error) {
+                document.getElementById('favoriteResult').innerText = `错误: ${error.message}`;
+            }
+        }
+
+        async function addComment() {
+            const username = document.getElementById('commentUsername').value;
+            const sushi_name = document.getElementById('commentSushiName').value;
+            const content = document.getElementById('commentContent').value;
+            const score = document.getElementById('commentScore').value;
+
+            if (!username || !sushi_name || !content || !score) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            try {
+                const data = await apiRequest('/sushi/actions/comment', 'POST', {
+                    username,
+                    sushi_name,
+                    content,
+                    score: parseInt(score)
+                });
+                document.getElementById('commentResult').innerText = JSON.stringify(data, null, 2);
+                getComments();
+                checkSushiStatus();
+                // 清空评论框
+                document.getElementById('commentContent').value = '';
+            } catch (error) {
+                document.getElementById('commentResult').innerText = `错误: ${error.message}`;
+            }
+        }
+
+        async function getComments() {
+            const sushi_name = document.getElementById('viewCommentsSushiName').value;
+            try {
+                const data = await apiRequest(`/sushi/actions/comments/${encodeURIComponent(sushi_name)}`);
+                const container = document.getElementById('commentsContainer');
+                if (data.comments.length === 0) {
+                    container.innerHTML = '<div class="no-results">暂无评论</div>';
+                    return;
+                }
+                container.innerHTML = data.comments.map(comment => `
+                    <div class="comment-card">
+                        <div class="comment-header">
+                            <span>用户: ${comment.username}</span>
+                            <span class="star-rating">${'⭐'.repeat(comment.score)}</span>
+                            <span>${comment.created_at}</span>
+                        </div>
+                        <div>${comment.content}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('commentsContainer').innerHTML = `<div class="error">错误: ${error.message}</div>`;
+            }
+        }
+
+        async function getUserLikes() {
+            const username = document.getElementById('userRecordUsername').value;
+            try {
+                const data = await apiRequest(`/sushi/actions/user/likes/${encodeURIComponent(username)}`);
+                document.getElementById('userRecordResult').innerText = `用户 ${username} 点赞的寿司:\n${JSON.stringify(data.likes, null, 2)}`;
+            } catch (error) {
+                document.getElementById('userRecordResult').innerText = `错误: ${error.message}`;
+            }
+        }
+
+        async function getUserFavorites() {
+            const username = document.getElementById('userRecordUsername').value;
+            try {
+                const data = await apiRequest(`/sushi/actions/user/favorites/${encodeURIComponent(username)}`);
+                document.getElementById('userRecordResult').innerText = `用户 ${username} 收藏的寿司:\n${JSON.stringify(data.favorites, null, 2)}`;
+            } catch (error) {
+                document.getElementById('userRecordResult').innerText = `错误: ${error.message}`;
+            }
+        }
+
+        // 页面加载时显示所有寿司
+        window.onload = getSushiList;
     </script>
 </body>
 </html>
