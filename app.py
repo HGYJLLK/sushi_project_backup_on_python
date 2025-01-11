@@ -8,14 +8,16 @@ import os
 app = Flask(__name__)
 CORS(app)
 
+
 # 添加这个路由来处理图片请求
 @app.route('/controllers/sushi_img/<path:filename>')
 def serve_sushi_image(filename):
     return send_from_directory('controllers/sushi_img', filename)
 
+
 # 数据库配置
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456789@localhost/sushi_db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123qweQWE!@localhost/sushi_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456789@localhost/sushi_db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123qweQWE!@localhost/sushi_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your-secret-key'
 

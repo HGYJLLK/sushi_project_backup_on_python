@@ -135,6 +135,14 @@
         </div>
     </div>
 
+
+    <!-- Markdown 测试区域 -->
+    <div class="section">
+        <h2>4. Markdown 测试</h2>
+        <input type="text" id="sushiName" placeholder="输入寿司名称">
+        <button onclick="testMarkdown()">获取 Markdown</button>
+        <div id="markdownResult" class="result" style="white-space: pre-wrap; font-family: monospace;"></div>
+    </div>
     <script>
         const API_BASE_URL = 'http://localhost:5001/api';
 
@@ -242,6 +250,20 @@
 
         // 页面加载时显示所有寿司
         window.onload = getSushiList;
+
+        async function testMarkdown() {
+            const sushiName = document.getElementById('sushiName').value;
+            if (!sushiName.trim()) {
+                alert('请输入寿司名称');
+                return;
+            }
+            try {
+                const data = await apiRequest(`/sushi/detail/${encodeURIComponent(sushiName)}`);
+                document.getElementById('markdownResult').innerText = data.data.content;
+            } catch (error) {
+                document.getElementById('markdownResult').innerText = `错误: ${error.message}`;
+            }
+        }
     </script>
 </body>
 </html>

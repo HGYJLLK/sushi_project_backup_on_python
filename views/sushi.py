@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from controllers.sushi import get_all_sushi, search_sushi
+from controllers.sushi import get_all_sushi, search_sushi, SUSHI_DETAILS, SUSHI_DATA
 import base64
 from pathlib import Path
 
@@ -19,6 +19,28 @@ def get_sushi_list():
             'status': 'error',
             'message': str(e)
         }), 500
+
+
+# 添加 get_image_base64 函数的实现
+def get_image_base64(image_path):
+    """将图片转换为 Base64 编码"""
+    try:
+        with open(image_path, "rb") as img_file:
+            encoded_image = base64.b64encode(img_file.read()).decode()
+            # 获取文件扩展名
+            file_extension = Path(image_path).suffix.lower()
+            # 根据扩展名选择正确的 MIME 类型
+            mime_types = {
+                '.jpg': 'image/jpeg',
+                '.jpeg': 'image/jpeg',
+                '.png': 'image/png',
+                '.gif': 'image/gif'
+            }
+            mime_type = mime_types.get(file_extension, 'image/jpeg')
+            return f"data:{mime_type};base64,{encoded_image}"
+    except Exception as e:
+        print(f"Error reading image: {str(e)}")
+        return None
 
 
 @sushi_bp.route('/search', methods=['GET'])
@@ -42,28 +64,59 @@ def search():
             'message': str(e)
         }), 500
 
-@sushi_bp.route("/content", methods=['GET'])
-def get_content():
+
+"""
+    "金枪鱼寿司": {
+        "name_en": "Tuna Sushi",
+        "description": "精选金枪鱼生鱼片，肉质紧实，味道鲜美",
+        "steps": [
+            "准备寿司醋和米饭",
+            "准备金枪鱼生鱼片",
+            "将寿司醋拌入米饭",
+            "把金枪鱼片盖在米饭上"
+        ]
+    }
+"""
+
+
+@sushi_bp.route("/detail/<path:sushi_name>", methods=['GET'])
+def get_sushi_detail(sushi_name):
     try:
-        content = (
-            "# 寿司介绍\n" +
-            "\n" +
-            "![寿司图片](data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QB+RXhpZgAASUkqAAgAAAAEAA4BAgAiAAAAPgAAAJiCAgAGAAAAYAAAABoBBQABAAAAZgAAABsBBQABAAAAbgAAAAAAAABCZWVmIFN1Y2hpIE5pZ2lyaSBvbiBhIGJsYWNrIHBsYXRlTWFudUhLLAEAAAEAAAAsAQAAAQAAAP...)\n" +
-            "\n" +
-            "***Vue :*** [Vue3 官网](https://cn.vuejs.org/)\n" +
-            "***CSDN :*** [CSDN 官网](https://www.csdn.net/)\n" +
-            "\n" +
-            "## 寿司种类\n" +
-            "\n" +
-            "***牛肉寿司 :*** [寿司制作教程](https://www.runoob.com/cooking/sushi-tutorial.html)\n" + 
-            "***金枪鱼寿司 :*** [寿司历史介绍](https://www.history-of-sushi.net)\n" +
-            "\n" +
-            "## 制作方法\n" +
-            "\n" +
-            "***步骤一 :*** 准备寿司醋和米饭\n" +
-            "***步骤二 :*** 准备生鱼片\n" +
-            "***步骤三 :*** 将食材卷起即可"
-        )
+        # 检查寿司是否存在
+        sushi_detail = SUSHI_DETAILS.get(sushi_name)
+        if not sushi_detail:
+            return jsonify({
+                'status': 'error',
+                'message': f'未找到寿司 {sushi_name} 的详情'
+            }), 404
+
+        # 获取寿司图片
+        # 从 SUSHI_DATA 中找到对应的图片路径
+        sushi = next((s for s in SUSHI_DATA if s.name == sushi_name), None)
+        if not sushi:
+            raise Exception("找不到寿司图片")
+
+        image_base64 = get_image_base64(sushi.image)
+        if not image_base64:
+            raise Exception("无法加载图片")
+
+        # 使用列表来构建 Markdown 内容
+        md_parts = [
+            f"# {sushi_name}",
+            "",  # 空行
+            f"![{sushi_name}]({image_base64})",
+            "",  # 空行
+            f"{sushi_detail['description']}",  # 描述
+            "",  # 空行
+            "## 制作步骤"
+        ]
+
+        # 添加制作步骤
+        for i, step in enumerate(sushi_detail['steps'], 1):
+            md_parts.append(f"***步骤 {i} :*** {step}")
+
+        # 用换行符连接所有部分
+        content = "\n".join(md_parts)
 
         return jsonify({
             'status': 'success',
@@ -71,7 +124,9 @@ def get_content():
                 'content': content
             }
         })
+
     except Exception as e:
+        print(f"Error: {str(e)}")  # 添加日志便于调试
         return jsonify({
             'status': 'error',
             'message': str(e)
