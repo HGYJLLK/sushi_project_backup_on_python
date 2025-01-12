@@ -1,9 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models.user import db, User
-from werkzeug.security import generate_password_hash, check_password_hash  # 添加密码哈希功能
 
 user_bp = Blueprint('user', __name__)
-
 
 @user_bp.route('/register', methods=['POST'])
 def register():
@@ -18,9 +16,8 @@ def register():
         if User.query.filter_by(username=username).first():
             return jsonify({'message': '用户名已存在'}), 400
 
-        # 使用werkzeug提供的密码哈希功能
-        hashed_password = generate_password_hash(password)
-        new_user = User(username=username, password=hashed_password)
+        # 直接存储原始密码
+        new_user = User(username=username, password=password)
 
         db.session.add(new_user)
         db.session.commit()
@@ -29,7 +26,6 @@ def register():
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': f'注册失败: {str(e)}'}), 500
-
 
 @user_bp.route('/login', methods=['POST'])
 def login():
@@ -43,19 +39,18 @@ def login():
 
         user = User.query.filter_by(username=username).first()
 
-        if user and check_password_hash(user.password, password):
+        # 直接比较原始密码
+        if user and user.password == password:
             return jsonify({
                 'message': '登录成功',
                 'data': {
                     'username': user.username,
-                    # 可以添加其他需要返回的用户信息
                 }
             }), 200
 
         return jsonify({'message': '用户名或密码错误'}), 401
     except Exception as e:
         return jsonify({'message': f'登录失败: {str(e)}'}), 500
-
 
 @user_bp.route('/status', methods=['POST'])
 def check_status():
