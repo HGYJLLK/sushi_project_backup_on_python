@@ -282,6 +282,7 @@
                     <input type="text" id="userRecordUsername" placeholder="用户名">
                     <button onclick="getUserLikes()">查看点赞</button>
                     <button onclick="getUserFavorites()">查看收藏</button>
+                    <button onclick="getUserComments()">查看评论</button>
                 </div>
                 <div id="userRecordResult" class="result"></div>
             </div>
@@ -543,6 +544,41 @@
 
         // 页面加载时显示所有寿司
         window.onload = getSushiList;
+
+        async function getUserComments() {
+        const username = document.getElementById('userRecordUsername').value;
+        if (!username) {
+            alert('请输入用户名');
+            return;
+        }
+
+        try {
+            const data = await apiRequest(`/sushi/actions/user/comments/${encodeURIComponent(username)}`);
+            const container = document.getElementById('userRecordResult');
+
+            if (data.comments.length === 0) {
+                container.innerHTML = '<div class="no-results">该用户暂无评论</div>';
+                return;
+            }
+
+            // 格式化评论显示
+            const commentsHtml = data.comments.map(comment => `
+                <div class="comment-card">
+                    <div class="comment-header">
+                        <span>寿司: ${comment.sushi_name}</span>
+                        <span class="star-rating">${'⭐'.repeat(comment.score)}</span>
+                        <span>${comment.created_at}</span>
+                    </div>
+                    <div>${comment.content}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = commentsHtml;
+        } catch (error) {
+            document.getElementById('userRecordResult').innerHTML =
+                `<div class="error">错误: ${error.message}</div>`;
+        }
+    }
     </script>
 </body>
 </html>

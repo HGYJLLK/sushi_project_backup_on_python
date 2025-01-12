@@ -200,3 +200,23 @@ def get_user_favorites(username):
     return jsonify({
         'favorites': [f.sushi_name for f in favorites]
     }), 200
+
+
+# 在 sushi_interaction_bp 中添加新的路由
+
+@sushi_interaction_bp.route('/user/comments/<username>', methods=['GET'])
+def get_user_comments(username):
+    """获取用户发表的所有评论"""
+    comments = Comment.query.filter_by(username=username) \
+        .order_by(Comment.created_at.desc()) \
+        .all()
+
+    return jsonify({
+        'comments': [{
+            'id': c.id,
+            'sushi_name': c.sushi_name,  # 添加寿司名称
+            'content': c.content,
+            'score': c.score,
+            'created_at': c.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        } for c in comments]
+    }), 200

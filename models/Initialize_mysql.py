@@ -7,7 +7,7 @@ from sqlalchemy import text  # 导入 text
 app = Flask(__name__)
 
 # 配置数据库连接
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:2333@localhost/sushi_db'  # 修改为你的数据库配置
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456789@localhost/sushi_db'  # 修改为你的数据库配置
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # 初始化 SQLAlchemy
@@ -62,35 +62,6 @@ def create_tables_and_insert_data():
     with app.app_context():  # 显式进入应用上下文
         db.create_all()  # 创建表格
         print("表格创建成功。")
-
-        # 插入一些测试数据
-        user1 = User(username='user1', password='password123')
-        user2 = User(username='user2', password='password456')
-        db.session.add(user1)
-        db.session.add(user2)
-        db.session.commit()
-        print("用户数据插入成功。")
-
-        like1 = Like(username='user1', sushi_name='Sushi1')
-        like2 = Like(username='user2', sushi_name='Sushi2')
-        db.session.add(like1)
-        db.session.add(like2)
-        db.session.commit()
-        print("点赞数据插入成功。")
-
-        favorite1 = Favorite(username='user1', sushi_name='Sushi2')
-        favorite2 = Favorite(username='user2', sushi_name='Sushi1')
-        db.session.add(favorite1)
-        db.session.add(favorite2)
-        db.session.commit()
-        print("收藏数据插入成功。")
-
-        comment1 = Comment(username='user1', sushi_name='Sushi1', content='Delicious!', score=5)
-        comment2 = Comment(username='user2', sushi_name='Sushi2', content='Not bad.', score=4)
-        db.session.add(comment1)
-        db.session.add(comment2)
-        db.session.commit()
-        print("评论数据插入成功。")
 
 
 # 主程序执行
