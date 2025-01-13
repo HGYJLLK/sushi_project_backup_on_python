@@ -288,6 +288,15 @@
             </div>
         </div>
     </div>
+    <div>
+        <h3>查看收藏详情（带评分）</h3>
+        <div class="sushi-interaction">
+            <input type="text" id="detailFavUsername" placeholder="用户名">
+            <button onclick="getUserFavoritesWithDetails()">查看收藏详情</button>
+        </div>
+        <div id="favoritesDetailContainer" class="comments-container"></div>
+    </div>
+
 
     <script>
         const API_BASE_URL = 'http://localhost:5001/api';
@@ -579,6 +588,40 @@
                 `<div class="error">错误: ${error.message}</div>`;
         }
     }
+
+    async function getUserFavoritesWithDetails() {
+    const username = document.getElementById('detailFavUsername').value;
+    if (!username) {
+        alert('请输入用户名');
+        return;
+    }
+
+    try {
+        const data = await apiRequest(`/sushi/actions/user/favorites/${encodeURIComponent(username)}`);
+        const container = document.getElementById('favoritesDetailContainer');
+
+        if (!data.favorites || data.favorites.length === 0) {
+            container.innerHTML = '<div class="no-results">该用户暂无收藏</div>';
+            return;
+        }
+
+        // 格式化收藏显示
+        const favoritesHtml = data.favorites.map(fav => `
+            <div class="comment-card">
+                <div class="comment-header">
+                    <span>寿司: ${fav.sushi_name}</span>
+                    <span class="star-rating">${'⭐'.repeat(Math.round(fav.score || 0))}</span>
+                    <span class="sushi-price">￥${fav.price.toFixed(2)}</span>
+                </div>
+            </div>
+        `).join('');
+
+        container.innerHTML = favoritesHtml;
+    } catch (error) {
+        document.getElementById('favoritesDetailContainer').innerHTML =
+            `<div class="error">错误: ${error.message}</div>`;
+    }
+}
     </script>
 </body>
 </html>

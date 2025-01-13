@@ -1,5 +1,7 @@
 # views/sushi_interaction.py
 from flask import Blueprint, request, jsonify
+
+from controllers.sushi import get_all_sushi
 from models.user import db, Like, Favorite, Comment
 
 sushi_interaction_bp = Blueprint('sushi_interaction', __name__)
@@ -196,13 +198,36 @@ def get_user_likes(username):
 
 @sushi_interaction_bp.route('/user/favorites/<username>', methods=['GET'])
 def get_user_favorites(username):
-    favorites = Favorite.query.filter_by(username=username).all()
-    return jsonify({
-        'favorites': [f.sushi_name for f in favorites]
-    }), 200
+    try:
+        # 获取用户收藏的寿司
+        favorites = db.session.query(
+            Favorite.sushi_name,
+            db.func.avg(Comment.score).label('avg_score')
+        ).outerjoin(
+            Comment, Favorite.sushi_name == Comment.sushi_name
+        ).filter(
+            Favorite.username == username
+        ).group_by(
+            Favorite.sushi_name
+        ).all()
 
+        # 获取所有寿司数据
+        all_sushi = get_all_sushi()
+        sushi_map = {sushi['name']: sushi['price'] for sushi in all_sushi}
 
-# 在 sushi_interaction_bp 中添加新的路由
+        return jsonify({
+            'favorites': [{
+                'sushi_name': fav.sushi_name,
+                'price': sushi_map.get(fav.sushi_name, 0),
+                'score': round(fav.avg_score, 1) if fav.avg_score else 0
+            } for fav in favorites]
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            'message': f'获取收藏信息失败: {str(e)}'
+        }), 500
+
 
 @sushi_interaction_bp.route('/user/comments/<username>', methods=['GET'])
 def get_user_comments(username):

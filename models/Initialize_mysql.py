@@ -1,13 +1,47 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
-from sqlalchemy import text  # 导入 text
+import pymysql
 
-# 初始化 Flask 应用和 SQLAlchemy
+# 数据库配置
+DB_USER = 'root'
+DB_PASSWORD = '2333'
+DB_HOST = 'localhost'
+DB_NAME = 'sushi_db'
+
+# 初始化 Flask 应用
 app = Flask(__name__)
 
-# 配置数据库连接
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456789@localhost/sushi_db'  # 修改为你的数据库配置
+
+# 创建一个函数来初始化数据库连接
+def init_db():
+    # 首先连接到 MySQL 服务器（不指定具体数据库）
+    root_engine = create_engine(f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/')
+
+    try:
+        # 检查数据库是否存在
+        with root_engine.connect() as conn:
+            # 先尝试删除已存在的数据库
+            conn.execute(text(f"DROP DATABASE IF EXISTS {DB_NAME}"))
+            conn.commit()
+
+            # 创建新数据库
+            conn.execute(text(f"CREATE DATABASE {DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"))
+            conn.commit()
+            print(f"数据库 {DB_NAME} 创建成功。")
+    except Exception as e:
+        print(f"创建数据库时出错: {str(e)}")
+        raise
+    finally:
+        root_engine.dispose()
+
+
+# 初始化数据库
+init_db()
+
+# 配置实际的应用数据库连接
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # 初始化 SQLAlchemy
@@ -40,36 +74,21 @@ class Comment(db.Model):
     user = db.relationship('User', backref=db.backref('comments', lazy=True))
 
 
-# 检查数据库是否存在并删除
-def check_and_create_db():
-    with app.app_context():  # 显式进入应用上下文
+def create_tables():
+    with app.app_context():
         try:
-            # 尝试连接并检查是否有数据库
-            db.session.execute(text("SELECT 1 FROM information_schema.schemata WHERE schema_name = 'sushi_db'"))
-            print("数据库 sushi_db 已存在，正在删除...")
-            db.session.execute(text("DROP DATABASE sushi_db;"))
-        except OperationalError:
-            print("数据库 sushi_db 不存在，准备创建新的数据库...")
-
-        # 创建新的数据库
-        db.session.execute(text("CREATE DATABASE sushi_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"))
-        db.session.execute(text("USE sushi_db;"))
-        print("数据库 sushi_db 创建成功。")
-
-
-# 创建表格并插入数据
-def create_tables_and_insert_data():
-    with app.app_context():  # 显式进入应用上下文
-        db.create_all()  # 创建表格
-        print("表格创建成功。")
+            db.create_all()
+            print("表格创建成功。")
+        except Exception as e:
+            print(f"创建表格时出错: {str(e)}")
+            raise
 
 
 # 主程序执行
 if __name__ == '__main__':
-    # 检查并创建数据库
-    check_and_create_db()
-
-    # 创建表格并插入测试数据
-    create_tables_and_insert_data()
-
-    print("脚本执行完成！")
+    try:
+        # 创建表格
+        create_tables()
+        print("脚本执行完成！")
+    except Exception as e:
+        print(f"程序执行出错: {str(e)}")
