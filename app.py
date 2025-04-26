@@ -4,6 +4,7 @@ from models.user import db
 from views.user import user_bp
 from views.sushi import sushi_bp
 from views.sushi_interaction import sushi_interaction_bp
+from views.admin import admin_bp
 import os
 
 app = Flask(__name__)
@@ -17,7 +18,7 @@ def serve_sushi_image(filename):
 
 
 # 数据库配置
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:2333@localhost/sushi_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123qweQWE!@localhost/sushi_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your-secret-key'
 
@@ -28,6 +29,7 @@ db.init_app(app)
 app.register_blueprint(user_bp, url_prefix='/api/auth')
 app.register_blueprint(sushi_bp, url_prefix='/api/sushi')  # 原有的寿司路由
 app.register_blueprint(sushi_interaction_bp, url_prefix='/api/sushi/actions')  # 新的交互功能
+app.register_blueprint(admin_bp, url_prefix='/api/admin')  # 管理员功能
 
 if __name__ == '__main__':
     with app.app_context():

@@ -6,7 +6,7 @@ import pymysql
 
 # 数据库配置
 DB_USER = 'root'
-DB_PASSWORD = '2333'
+DB_PASSWORD = '123qweQWE!'
 DB_HOST = 'localhost'
 DB_NAME = 'sushi_db'
 
@@ -72,6 +72,13 @@ class Comment(db.Model):
     score = db.Column(db.SmallInteger)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     user = db.relationship('User', backref=db.backref('comments', lazy=True))
+
+# 管理员模型
+class Admin(db.Model):
+    username = db.Column(db.String(80), primary_key=True)
+    password = db.Column(db.String(120))
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    last_login = db.Column(db.DateTime)
 
 
 def create_tables():
