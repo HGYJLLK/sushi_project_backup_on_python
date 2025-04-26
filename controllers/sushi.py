@@ -4,7 +4,6 @@ class Sushi:
         self.image = f"controllers/sushi_img/{image}"
         self.price = price
 
-
 # 初始化寿司数据
 SUSHI_DATA = [
     Sushi("三文鱼寿司", "salmon_sushi.jpg", 28),
@@ -26,7 +25,7 @@ SUSHI_DATA = [
     Sushi("火炙牛肉寿司", "beef_sushi.jpg", 35),
     Sushi("彩虹卷", "rainbow_roll.jpg", 32),
     Sushi("梅子寿司", "plum_sushi.jpg", 18),
-    Sushi("天妇罗虾寿司", "tempura_shrimp_sushi.jpg", 28)
+    Sushi("天妇罗虾寿司", "tempura_shrimp_sushi.jpg", 28),
 ]
 
 SUSHI_DETAILS = {
@@ -37,8 +36,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "准备新鲜三文鱼片",
             "将寿司醋拌入米饭",
-            "把三文鱼片盖在米饭上"
-        ]
+            "把三文鱼片盖在米饭上",
+        ],
     },
     "金枪鱼寿司": {
         "name_en": "Tuna Sushi",
@@ -47,8 +46,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "准备金枪鱼生鱼片",
             "将寿司醋拌入米饭",
-            "把金枪鱼片盖在米饭上"
-        ]
+            "把金枪鱼片盖在米饭上",
+        ],
     },
     "虾寿司": {
         "name_en": "Shrimp Sushi",
@@ -58,8 +57,8 @@ SUSHI_DETAILS = {
             "虾仁去壳去虾线",
             "将虾仁煮熟",
             "将寿司醋拌入米饭",
-            "把煮熟的虾仁放在米饭上"
-        ]
+            "把煮熟的虾仁放在米饭上",
+        ],
     },
     "鳗鱼寿司": {
         "name_en": "Eel Sushi",
@@ -69,8 +68,8 @@ SUSHI_DETAILS = {
             "鳗鱼切片并烤制",
             "刷上特制蒲烧酱",
             "将寿司醋拌入米饭",
-            "把烤好的鳗鱼片放在米饭上"
-        ]
+            "把烤好的鳗鱼片放在米饭上",
+        ],
     },
     "蟹肉寿司": {
         "name_en": "Crab Sushi",
@@ -79,8 +78,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "蟹肉拆解成小块",
             "将寿司醋拌入米饭",
-            "把蟹肉放在米饭上"
-        ]
+            "把蟹肉放在米饭上",
+        ],
     },
     "玉子寿司": {
         "name_en": "Egg Sushi",
@@ -90,8 +89,8 @@ SUSHI_DETAILS = {
             "制作日式玉子烧",
             "将玉子烧切片",
             "将寿司醋拌入米饭",
-            "把玉子烧片放在米饭上"
-        ]
+            "把玉子烧片放在米饭上",
+        ],
     },
     "黄尾鱼寿司": {
         "name_en": "Yellow Tail Sushi",
@@ -100,8 +99,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "准备新鲜黄尾鱼片",
             "将寿司醋拌入米饭",
-            "把黄尾鱼片盖在米饭上"
-        ]
+            "把黄尾鱼片盖在米饭上",
+        ],
     },
     "章鱼寿司": {
         "name_en": "Octopus Sushi",
@@ -110,8 +109,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "章鱼煮熟后切片",
             "将寿司醋拌入米饭",
-            "把章鱼片放在米饭上"
-        ]
+            "把章鱼片放在米饭上",
+        ],
     },
     "青花鱼寿司": {
         "name_en": "Mackerel Sushi",
@@ -120,8 +119,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "青花鱼片腌制",
             "将寿司醋拌入米饭",
-            "把腌制好的青花鱼片放在米饭上"
-        ]
+            "把腌制好的青花鱼片放在米饭上",
+        ],
     },
     "鱿鱼寿司": {
         "name_en": "Squid Sushi",
@@ -130,8 +129,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "鱿鱼切片",
             "将寿司醋拌入米饭",
-            "把鱿鱼片放在米饭上"
-        ]
+            "把鱿鱼片放在米饭上",
+        ],
     },
     "素寿司卷": {
         "name_en": "Vegetable Roll",
@@ -140,8 +139,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "准备各种新鲜蔬菜",
             "将寿司醋拌入米饭",
-            "把蔬菜放入并卷起"
-        ]
+            "把蔬菜放入并卷起",
+        ],
     },
     "加州卷": {
         "name_en": "California Roll",
@@ -151,8 +150,8 @@ SUSHI_DETAILS = {
             "准备蟹棒和牛油果",
             "将寿司醋拌入米饭",
             "把材料放入并卷起",
-            "外裹上鱼子"
-        ]
+            "外裹上鱼子",
+        ],
     },
     "炙烤三文鱼寿司": {
         "name_en": "Seared Salmon Sushi",
@@ -161,8 +160,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "三文鱼片表面炙烤",
             "将寿司醋拌入米饭",
-            "把炙烤好的三文鱼片放在米饭上"
-        ]
+            "把炙烤好的三文鱼片放在米饭上",
+        ],
     },
     "龙虾寿司": {
         "name_en": "Lobster Sushi",
@@ -171,8 +170,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "龙虾煮熟取肉",
             "将寿司醋拌入米饭",
-            "把龙虾肉放在米饭上"
-        ]
+            "把龙虾肉放在米饭上",
+        ],
     },
     "鲷鱼寿司": {
         "name_en": "Sea Bream Sushi",
@@ -181,8 +180,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "准备鲷鱼生鱼片",
             "将寿司醋拌入米饭",
-            "把鲷鱼片放在米饭上"
-        ]
+            "把鲷鱼片放在米饭上",
+        ],
     },
     "帝王蟹寿司": {
         "name_en": "King Crab Sushi",
@@ -191,8 +190,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "帝王蟹腿肉处理",
             "将寿司醋拌入米饭",
-            "把蟹肉放在米饭上"
-        ]
+            "把蟹肉放在米饭上",
+        ],
     },
     "火炙牛肉寿司": {
         "name_en": "Beef Sushi",
@@ -201,8 +200,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "牛肉片表面炙烤",
             "将寿司醋拌入米饭",
-            "把炙烤好的牛肉片放在米饭上"
-        ]
+            "把炙烤好的牛肉片放在米饭上",
+        ],
     },
     "彩虹卷": {
         "name_en": "Rainbow Roll",
@@ -211,8 +210,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "准备各种生鱼片",
             "制作基础卷物",
-            "在外层铺上不同的生鱼片"
-        ]
+            "在外层铺上不同的生鱼片",
+        ],
     },
     "梅子寿司": {
         "name_en": "Plum Sushi",
@@ -221,8 +220,8 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "准备腌制梅子",
             "将寿司醋拌入米饭",
-            "在米饭上放入梅子"
-        ]
+            "在米饭上放入梅子",
+        ],
     },
     "天妇罗虾寿司": {
         "name_en": "Tempura Shrimp Sushi",
@@ -231,19 +230,14 @@ SUSHI_DETAILS = {
             "准备寿司醋和米饭",
             "制作虾天妇罗",
             "将寿司醋拌入米饭",
-            "把天妇罗虾放在米饭上"
-        ]
-    }
+            "把天妇罗虾放在米饭上",
+        ],
+    },
 }
-
 
 def get_all_sushi():
     """获取所有寿司数据"""
-    return [{"name": s.name,
-             "image": s.image,
-             "price": s.price}
-            for s in SUSHI_DATA]
-
+    return [{"name": s.name, "image": s.image, "price": s.price} for s in SUSHI_DATA]
 
 def search_sushi(keyword):
     """根据名称搜索寿司
@@ -252,11 +246,11 @@ def search_sushi(keyword):
     Returns:
         list: 匹配的寿司列表
     """
-    return [{"name": s.name,
-             "image": s.image,
-             "price": s.price}
-            for s in SUSHI_DATA if keyword in s.name]
-
+    return [
+        {"name": s.name, "image": s.image, "price": s.price}
+        for s in SUSHI_DATA
+        if keyword in s.name
+    ]
 
 def get_sushi_detail(sushi_name):
     """根据寿司名称获取详情
@@ -266,3 +260,73 @@ def get_sushi_detail(sushi_name):
         dict: 寿司详情数据，如果不存在返回 None
     """
     return SUSHI_DETAILS.get(sushi_name)
+
+def add_sushi(name, image_filename, price, details):
+    """添加新寿司
+    Args:
+        name (str): 寿司名称
+        image_filename (str): 图片文件名
+        price (float): 价格
+        details (dict): 详情信息
+    Returns:
+        bool: 是否成功
+    """
+    # 检查是否已存在
+    if any(s.name == name for s in SUSHI_DATA):
+        return False, "寿司名称已存在"
+
+    # 添加到SUSHI_DATA
+    SUSHI_DATA.append(Sushi(name, image_filename, float(price)))
+
+    # 添加到SUSHI_DETAILS
+    SUSHI_DETAILS[name] = details
+
+    return True, "添加成功"
+
+
+def update_sushi(name, image_filename, price, details):
+    """更新寿司信息
+    Args:
+        name (str): 寿司名称
+        image_filename (str): 图片文件名
+        price (float): 价格
+        details (dict): 详情信息
+    Returns:
+        bool: 是否成功
+    """
+    # 查找索引
+    index = next((i for i, s in enumerate(SUSHI_DATA) if s.name == name), -1)
+
+    if index == -1:
+        return False, "寿司不存在"
+
+    # 更新SUSHI_DATA
+    SUSHI_DATA[index] = Sushi(name, image_filename, float(price))
+
+    # 更新SUSHI_DETAILS
+    SUSHI_DETAILS[name] = details
+
+    return True, "更新成功"
+
+
+def delete_sushi(name):
+    """删除寿司
+    Args:
+        name (str): 寿司名称
+    Returns:
+        bool: 是否成功
+    """
+    # 查找索引
+    index = next((i for i, s in enumerate(SUSHI_DATA) if s.name == name), -1)
+
+    if index == -1:
+        return False, "寿司不存在"
+
+    # 从SUSHI_DATA删除
+    SUSHI_DATA.pop(index)
+
+    # 从SUSHI_DETAILS删除
+    if name in SUSHI_DETAILS:
+        del SUSHI_DETAILS[name]
+
+    return True, "删除成功"
