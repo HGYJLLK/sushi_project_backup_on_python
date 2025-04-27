@@ -53,4 +53,16 @@ CREATE TABLE comments (
     FOREIGN KEY (username) REFERENCES users(username),
     INDEX idx_sushi (sushi_name)
 );
+
+# -- 5. 创建管理员表
+# CREATE TABLE admins (
+#     username VARCHAR(80) NOT NULL,
+#     password VARCHAR(120) NOT NULL,
+#     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+#     last_login TIMESTAMP NULL,
+#     PRIMARY KEY (username)
+# );
+
+-- 6. 添加一个初始管理员账号 (用户名: admin, 密码: admin123)
+INSERT INTO admins (username, password) VALUES ('admin', 'admin123');
 ```

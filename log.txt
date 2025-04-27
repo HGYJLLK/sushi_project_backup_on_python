@@ -1,0 +1,31 @@
+- 添加管理端功能第一步：创建管理员类和相应的一些 API 功能
+
+1. 新增文件models/admin.py来新增管理员的数据库基本信息
+2. 新增文件views/admin.py用来实现管理员的相关功能，如登录、添加管理员账号等
+3. 更新 app.py文件，新增注册路由功能
+```python
+from views.admin import admin_bp
+
+# 注册蓝图
+app.register_blueprint(admin_bp, url_prefix='/api/admin')
+```
+4. 更新数据库初始化的内容，添加管理员类，用于初始化时包含这个管理员类
+```python
+# 在其他模型定义后添加
+class Admin(db.Model):
+    username = db.Column(db.String(80), primary_key=True)
+    password = db.Column(db.String(120))
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    last_login = db.Column(db.DateTime)
+```
+
+- 第二步：实现管理员的功能
+
+1. 继续扩展views/admin.py的代码，完善用户的增删改查功能
+2. 修改controllers/sushi.py的代码，新增寿司的增删改查功能
+3. 更新 views/admin.py的代码，完善增删改查的接口，使得前端能够调用它
+
+- 第五步：新增数据表和管理员账号数据
+
+1. 在 README.md文件中，新增管理员表和管理员账号的 sql 语句
+2. 在原有的基础上，登录 MySQL然后运行新增的管理员表和新账号的 sql 语句
