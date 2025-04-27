@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify,current_app
 from models.user import db
 from models.admin import Admin
 from models.user import User, Comment, Like, Favorite
@@ -13,6 +13,7 @@ import os
 from werkzeug.utils import secure_filename
 import shutil
 import json
+import time
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -267,3 +268,40 @@ def admin_delete_sushi(name):
         return jsonify({"message": message}), 200
     except Exception as e:
         return jsonify({"message": f"删除寿司失败: {str(e)}"}), 500
+
+
+# 图片上传API
+@admin_bp.route('/upload', methods=['POST'])
+def upload_file():
+    try:
+        if 'file' not in request.files:
+            return jsonify({'message': '没有文件部分'}), 400
+            
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'message': '没有选择文件'}), 400
+            
+        # 安全地获取文件名
+        filename = secure_filename(file.filename)
+        
+        # 确保文件名是唯一的
+        base, ext = os.path.splitext(filename)
+        filename = f"{base}_{int(time.time())}{ext}"
+        
+        # 保存文件
+        upload_folder = 'controllers/sushi_img'
+        if not os.path.exists(upload_folder):
+            os.makedirs(upload_folder)
+            
+        file_path = os.path.join(upload_folder, filename)
+        file.save(file_path)
+        
+        return jsonify({
+            'message': '文件上传成功',
+            'data': {
+                'filename': filename,
+                'path': f'controllers/sushi_img/{filename}'
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({'message': f'文件上传失败: {str(e)}'}), 500
