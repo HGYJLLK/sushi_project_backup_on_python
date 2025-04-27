@@ -2,7 +2,13 @@ from flask import Blueprint, request, jsonify
 from models.user import db
 from models.admin import Admin
 from models.user import User, Comment, Like, Favorite
-from controllers.sushi import add_sushi, update_sushi, delete_sushi, get_all_sushi
+from controllers.sushi import (
+    add_sushi,
+    update_sushi,
+    delete_sushi,
+    get_all_sushi,
+    get_sushi_detail,
+)
 import os
 from werkzeug.utils import secure_filename
 import shutil
@@ -197,8 +203,14 @@ def delete_comment(comment_id):
 @admin_bp.route("/sushi", methods=["GET"])
 def admin_get_sushi_list():
     try:
-        # 获取所有寿司
-        sushi_list = get_all_sushi()
+        # 获取所有寿司数据
+        sushi_list = []
+        all_sushi = get_all_sushi()
+
+        for sushi in all_sushi:
+            detail = get_sushi_detail(sushi["name"])
+            sushi["details"] = detail  # 添加详情到每个寿司对象
+            sushi_list.append(sushi)
 
         return jsonify({"message": "获取寿司列表成功", "data": sushi_list}), 200
     except Exception as e:
